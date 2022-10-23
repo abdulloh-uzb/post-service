@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package post;
+service PostService{
+    rpc CreatePost (PostReq) returns(Post);
+    rpc UpdatePost(Post) returns (Post);
+    rpc GetPost(Id) returns (GetPostResponse);
+    rpc DeletePost(Id) returns (Empty);
+    rpc ListPost(Empty) returns (Posts);
+    rpc GetPostByCustomerId (Id) returns (Posts);
+}
+
+message Post {
+    int64 id = 1;
+    string name = 2;
+    string description = 3;
+    string created_at = 4;
+    string updated_at = 5;
+    repeated Media medias = 6;
+    int64 customer_id = 7;
+}
+message PostReq {
+    int64 id = 1;
+    string name = 2;
+    string description = 3;
+    repeated Media medias = 6;
+    int64 customer_id = 7;
+}
+message GetPostResponse {
+    int64 id = 1;
+    string name = 2;
+    string description = 3;
+    string created_at = 4;
+    string updated_at = 5;
+    repeated Media medias = 6;
+    repeated Customer customer_info = 7;
+    repeated Ranking rankings = 8;
+
+}
+message Posts {
+    repeated Post posts = 1;
+}
+
+message Id {
+    int64 id = 1;
+}
+message Customer{
+    int64 id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string bio = 4;
+    string email = 5;
+    string phone_number = 6;
+}
+
+message Ranking{
+    string name=1;
+    int64 ranking = 2;
+    string description = 3;
+    int64 post_id = 4;
+    int64 customer_id = 5;
+
+}
+message Media {
+    int64 id = 1;
+    string name = 2;
+    string link = 3;
+    string type = 4;
+}
+
+message Empty {}
+
+
+
+
