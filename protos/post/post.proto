@@ -18,6 +18,8 @@ message Post {
     string updated_at = 5;
     repeated Media medias = 6;
     int64 customer_id = 7;
+    repeated Customer customer = 8;
+    repeated Ranking ranking = 9;
 }
 message PostReq {
     int64 id = 1;

@@ -87,12 +87,46 @@ func (p *PostService) GetPost(ctx context.Context, req *pbp.Id) (*pbp.GetPostRes
 }
 
 func (p *PostService) ListPost(ctx context.Context, req *pbp.Empty) (*pbp.Posts, error) {
-	post, err := p.storage.Post().ListPost()
+	posts, err := p.storage.Post().ListPost()
 	if err != nil {
 		p.logger.Error("error list", l.Any("error list post", err))
 		return &pbp.Posts{}, status.Error(codes.Internal, "something went wrong, please check list post")
+
 	}
-	return post, nil
+
+	for _, post := range posts.Posts {
+		customerInfo, err := p.client.Customer().GetCustomer(ctx, &pbc.CustomerId{Id: post.Id})
+		if err != nil {
+			p.logger.Error("error get", l.Any("error get post", err))
+			return &pbp.Posts{}, status.Error(codes.Internal, "something went wrong, please check get post")
+		}
+
+		rankings, err := p.client.Ranking().GetRankings(ctx, &pbr.Id{
+			Id: post.Id,
+		})
+		if err != nil {
+			p.logger.Error("error delete", l.Any("error delete post", err))
+			return &pbp.Posts{}, status.Error(codes.Internal, "something went wrong, please check get post")
+		}
+		post.Customer = append(post.Customer, &pbp.Customer{
+			FirstName:   customerInfo.FirstName,
+			LastName:    customerInfo.LastName,
+			Bio:         customerInfo.Bio,
+			Email:       customerInfo.Email,
+			PhoneNumber: customerInfo.PhoneNumber,
+		})
+		for _, r := range rankings.Rankings {
+			post.Ranking = append(post.Ranking, &pbp.Ranking{
+				Name:        r.Name,
+				Description: r.Description,
+				Ranking:     r.Ranking,
+				PostId:      r.PostId,
+				CustomerId:  r.CustomerId,
+			})
+		}
+	}
+
+	return posts, nil
 }
 func (p *PostService) UpdatePost(ctx context.Context, req *pbp.Post) (*pbp.Post, error) {
 	post, err := p.storage.Post().UpdatePost(req)

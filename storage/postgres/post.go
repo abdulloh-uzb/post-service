@@ -74,7 +74,7 @@ func (p *postRepo) GetPost(id int) (*pbp.GetPostResponse, error) {
 	return post, nil
 }
 func (p *postRepo) ListPost() (*pbp.Posts, error) {
-	posts := &pbp.Posts{}
+	posts := pbp.Posts{}
 	rows, err := p.db.Query(`select id, name, description, customer_id from posts where deleted_at is null`)
 	if err != nil {
 		return &pbp.Posts{}, err
@@ -99,7 +99,7 @@ func (p *postRepo) ListPost() (*pbp.Posts, error) {
 		posts.Posts = append(posts.Posts, post)
 	}
 
-	return posts, nil
+	return &posts, nil
 }
 func (p *postRepo) UpdatePost(req *pbp.Post) (*pbp.Post, error) {
 	post := &pbp.Post{}
