@@ -1,8 +1,8 @@
 package db
 
 import (
+	"exam/post-service/config"
 	"fmt"
-	"post-service/config"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"

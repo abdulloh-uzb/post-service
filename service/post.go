@@ -2,12 +2,13 @@ package service
 
 import (
 	"context"
-	pbc "post-service/genproto/customer"
-	pbp "post-service/genproto/post"
-	pbr "post-service/genproto/reyting"
-	l "post-service/pkg/logger"
-	"post-service/service/grpcClient"
-	"post-service/storage"
+	pbc "exam/post-service/genproto/customer"
+	pbp "exam/post-service/genproto/post"
+	pbr "exam/post-service/genproto/reyting"
+	l "exam/post-service/pkg/logger"
+	"exam/post-service/service/grpcClient"
+	"exam/post-service/storage"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -55,6 +56,7 @@ func (p *PostService) GetPost(ctx context.Context, req *pbp.Id) (*pbp.GetPostRes
 		return &pbp.GetPostResponse{}, status.Error(codes.Internal, "something went wrong, please check get post")
 	}
 	customerInfo, err := p.client.Customer().GetCustomer(ctx, &pbc.CustomerId{Id: post.Id})
+	fmt.Println(err)
 	if err != nil {
 		p.logger.Error("error get", l.Any("error get post", err))
 		return &pbp.GetPostResponse{}, status.Error(codes.Internal, "something went wrong, please check get post")

@@ -1,18 +1,17 @@
 package main
 
 import (
+	"exam/post-service/config"
+	pbp "exam/post-service/genproto/post"
+	"exam/post-service/pkg/db"
+	"exam/post-service/pkg/logger"
+	"exam/post-service/service"
+	"exam/post-service/service/grpcClient"
 	"net"
-	"post-service/config"
-	pbp "post-service/genproto/post"
-	"post-service/pkg/db"
-	"post-service/pkg/logger"
-	"post-service/service"
-	"post-service/service/grpcClient"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
-
 
 func main() {
 	cfg := config.Load()
@@ -54,4 +53,3 @@ func main() {
 	}
 
 }
-

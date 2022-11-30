@@ -11,10 +11,10 @@ proto-gen:
 lint: ## Run golangci-lint with printing to stdout
 	golangci-lint -c .golangci.yaml run --build-tags "musl" ./...
 migrate_up:
-	migrate -source file://migrations -database postgres://postgres:1234@dbpost:5434/postdb up
+	migrate -source file://migrations -database postgres://abdulloh:abdulloh@database-1.c9lxq3r1itbt.us-east-1.rds.amazonaws.com:5432/postdb_abdulloh?sslmode=disable up
 
 migrate_down:
-	migrate -source file://migrations -database postgres://postgres:1234@localhost:5432/post_service down
+	migrate -source file://migrations -database postgres://abdulloh:abdulloh@database-1.c9lxq3r1itbt.us-east-1.rds.amazonaws.com:5432/postdb_abdulloh?sslmode=disable down
 
 migrate_force:
-	migrate -path migrations/ -database postgres://postgres:1234@localhost:5432/post?sslmode=disable force 1
+	migrate -path migrations/ -database postgres://abdulloh:abdulloh@database-1.c9lxq3r1itbt.us-east-1.rds.amazonaws.com:5432/postdb_abdulloh?sslmode=disable force 1

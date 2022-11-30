@@ -1,7 +1,7 @@
 package repo
 
 import (
-	pbp "post-service/genproto/post"
+	pbp "exam/post-service/genproto/post"
 )
 
 type PostStorageI interface {

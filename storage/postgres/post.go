@@ -1,8 +1,8 @@
 package postgres
 
 import (
+	pbp "exam/post-service/genproto/post"
 	"fmt"
-	pbp "post-service/genproto/post"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -55,6 +55,7 @@ func (p *postRepo) DeletePost(id int) (*pbp.Empty, error) {
 
 func (p *postRepo) GetPost(id int) (*pbp.GetPostResponse, error) {
 	post := &pbp.GetPostResponse{}
+	fmt.Println(id)
 	err := p.db.QueryRow(`select id, name, description from posts where id=$1 and deleted_at is null`, id).
 		Scan(&post.Id, &post.Name, &post.Description)
 	if err != nil {
