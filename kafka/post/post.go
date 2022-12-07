@@ -57,7 +57,6 @@ func (p *ProducerCreateConsumer) ProducerCreateConsumerCode() {
 		}
 		for _, post := range req.Posts {
 			i := &pbp.PostReq{
-				Id:         post.Id,
 				CustomerId: post.CustomerId,
 			}
 			p.Storage.Post().Create(i)

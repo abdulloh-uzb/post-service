@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	pbc "exam/post-service/genproto/customer"
 	pbp "exam/post-service/genproto/post"
 	pbr "exam/post-service/genproto/reyting"
@@ -42,6 +43,7 @@ func (p *PostService) CreatePost(ctx context.Context, req *pbp.PostReq) (*pbp.Po
 
 func (p *PostService) DeletePost(ctx context.Context, req *pbp.Id) (*pbp.Empty, error) {
 	post, err := p.storage.Post().DeletePost(int(req.Id))
+	p.client.Ranking().DeleteRankingByPostId(ctx, &pbr.Id{Id: req.Id})
 	if err != nil {
 		p.logger.Error("error delete", l.Any("error delete post", err))
 		return &pbp.Empty{}, status.Error(codes.Internal, "something went wrong, please check delete post")
@@ -51,6 +53,9 @@ func (p *PostService) DeletePost(ctx context.Context, req *pbp.Id) (*pbp.Empty, 
 
 func (p *PostService) GetPost(ctx context.Context, req *pbp.Id) (*pbp.GetPostResponse, error) {
 	post, err := p.storage.Post().GetPost(int(req.Id))
+	if err == sql.ErrNoRows {
+		return &pbp.GetPostResponse{Message: "afsuski post topilmadi"}, nil
+	}
 	if err != nil {
 		p.logger.Error("error get", l.Any("error get post", err))
 		return &pbp.GetPostResponse{}, status.Error(codes.Internal, "something went wrong, please check get post")
@@ -97,7 +102,8 @@ func (p *PostService) ListPost(ctx context.Context, req *pbp.Empty) (*pbp.Posts,
 	}
 
 	for _, post := range posts.Posts {
-		customerInfo, err := p.client.Customer().GetCustomer(ctx, &pbc.CustomerId{Id: post.Id})
+		customerInfo, err := p.client.Customer().GetCustomer(ctx, &pbc.CustomerId{Id: post.CustomerId})
+		fmt.Println(err)
 		if err != nil {
 			p.logger.Error("error get", l.Any("error get post", err))
 			return &pbp.Posts{}, status.Error(codes.Internal, "something went wrong, please check get post")
@@ -140,6 +146,7 @@ func (p *PostService) UpdatePost(ctx context.Context, req *pbp.Post) (*pbp.Post,
 }
 
 func (p *PostService) GetPostByCustomerId(ctx context.Context, req *pbp.Id) (*pbp.Posts, error) {
+
 	posts, err := p.storage.Post().GetPostByCustomerId(int(req.Id))
 	if err != nil {
 		p.logger.Error("error update", l.Any("error get post", err))

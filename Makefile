@@ -2,6 +2,9 @@ CURRENT_DIR=$(shell pwd)
 APP=template
 APP_CMD_DIR=./cmd
 
+run:
+	go run cmd/main.go
+
 build:
 	CGO_ENABLED=0 GOOS=darwin go build -mod=vendor -a -installsuffix cgo -o ${CURRENT_DIR}/bin/${APP} ${APP_CMD_DIR}/main.go
 

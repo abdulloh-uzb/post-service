@@ -54,10 +54,11 @@ func (p *postRepo) DeletePost(id int) (*pbp.Empty, error) {
 }
 
 func (p *postRepo) GetPost(id int) (*pbp.GetPostResponse, error) {
-	post := &pbp.GetPostResponse{}
 	fmt.Println(id)
+	post := &pbp.GetPostResponse{}
 	err := p.db.QueryRow(`select id, name, description from posts where id=$1 and deleted_at is null`, id).
 		Scan(&post.Id, &post.Name, &post.Description)
+
 	if err != nil {
 		return &pbp.GetPostResponse{}, err
 	}
@@ -110,6 +111,7 @@ func (p *postRepo) UpdatePost(req *pbp.Post) (*pbp.Post, error) {
 
 func (p *postRepo) GetPostByCustomerId(id int) (*pbp.Posts, error) {
 	posts := &pbp.Posts{}
+
 	rows, err := p.db.Query(`select id, name, description, customer_id from posts where customer_id = $1 and deleted_at is null`, id)
 
 	if err != nil {
