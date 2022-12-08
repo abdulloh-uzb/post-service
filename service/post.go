@@ -10,6 +10,7 @@ import (
 	"exam/post-service/service/grpcClient"
 	"exam/post-service/storage"
 	"fmt"
+	"strconv"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -60,8 +61,12 @@ func (p *PostService) GetPost(ctx context.Context, req *pbp.Id) (*pbp.GetPostRes
 		p.logger.Error("error get", l.Any("error get post", err))
 		return &pbp.GetPostResponse{}, status.Error(codes.Internal, "something went wrong, please check get post")
 	}
-	customerInfo, err := p.client.Customer().GetCustomer(ctx, &pbc.CustomerId{Id: post.Id})
-	fmt.Println(err)
+	c_id, err := strconv.Atoi(post.CustomerId)
+	if err != nil {
+		p.logger.Error("error while strconv", l.Any("error while converting customer_id from string to int", err))
+		return &pbp.GetPostResponse{}, status.Error(codes.Internal, "something went wrong, please check get post")
+	}
+	customerInfo, err := p.client.Customer().GetCustomer(ctx, &pbc.CustomerId{Id: int64(c_id)})
 	if err != nil {
 		p.logger.Error("error get", l.Any("error get post", err))
 		return &pbp.GetPostResponse{}, status.Error(codes.Internal, "something went wrong, please check get post")
@@ -71,7 +76,7 @@ func (p *PostService) GetPost(ctx context.Context, req *pbp.Id) (*pbp.GetPostRes
 		Id: req.Id,
 	})
 	if err != nil {
-		p.logger.Error("error delete", l.Any("error delete post", err))
+		p.logger.Error("error get", l.Any("error get post", err))
 		return &pbp.GetPostResponse{}, status.Error(codes.Internal, "something went wrong, please check get post")
 	}
 	post.CustomerInfo = append(post.CustomerInfo, &pbp.Customer{
@@ -153,4 +158,14 @@ func (p *PostService) GetPostByCustomerId(ctx context.Context, req *pbp.Id) (*pb
 		return &pbp.Posts{}, status.Error(codes.Internal, "something went wrong, please check get post")
 	}
 	return posts, err
+}
+
+func (p *PostService) DeleteByCustomerId(ctx context.Context, req *pbp.Id) (*pbp.Empty, error) {
+	post, err := p.storage.Post().DeletePostByCustomerId(int(req.Id))
+	p.client.Ranking().DeleteRankingByPostId(ctx, &pbr.Id{Id: req.Id})
+	if err != nil {
+		p.logger.Error("error delete", l.Any("error delete post", err))
+		return &pbp.Empty{}, status.Error(codes.Internal, "something went wrong, please check delete post")
+	}
+	return post, nil
 }
