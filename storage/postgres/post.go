@@ -44,7 +44,6 @@ func (p *postRepo) Create(req *pbp.PostReq) (*pbp.Post, error) {
 }
 
 func (p *postRepo) DeletePost(id int) (*pbp.Empty, error) {
-
 	_, err := p.db.Exec(`update posts set deleted_at = $1 where id=$2 and deleted_at is null`, time.Now(), id)
 	if err != nil {
 		return &pbp.Empty{}, err

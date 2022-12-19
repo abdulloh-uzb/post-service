@@ -29,17 +29,17 @@ func Load() Config {
 
 	c.PostgresHost = cast.ToString(getOrReturnDefault("POSTGRES_HOST", "localhost"))
 	c.PostgresPort = cast.ToInt(getOrReturnDefault("POSTGRES_PORT", 5432))
-	c.PostgresDatabase = cast.ToString(getOrReturnDefault("POSTGRES_DATABASE", "postdb"))
-	c.PostgresUser = cast.ToString(getOrReturnDefault("POSTGRES_USER", "postgres"))
-	c.PostgresPassword = cast.ToString(getOrReturnDefault("POSTGRES_PASSWORD", "1234"))
+	c.PostgresDatabase = cast.ToString(getOrReturnDefault("POSTGRES_DATABASE", "postdb_abdulloh"))
+	c.PostgresUser = cast.ToString(getOrReturnDefault("POSTGRES_USER", "abdulloh"))
+	c.PostgresPassword = cast.ToString(getOrReturnDefault("POSTGRES_PASSWORD", "abdulloh"))
 
 	c.LogLevel = cast.ToString(getOrReturnDefault("LOG_LEVEL", "debug"))
 	c.RPCPort = cast.ToString(getOrReturnDefault("RPC_PORT", ":8000"))
 
-	c.CustomerServiceHost = cast.ToString(getOrReturnDefault("CUSTOMER_HOST", "localhost"))
+	c.CustomerServiceHost = cast.ToString(getOrReturnDefault("CUSTOMER_HOST", "customer-service"))
 	c.CustomerServicePort = cast.ToInt(getOrReturnDefault("CUSTOMER_PORT", 8002))
 
-	c.RankingServiceHost = cast.ToString(getOrReturnDefault("CUSTOMER_HOST", "localhost"))
+	c.RankingServiceHost = cast.ToString(getOrReturnDefault("CUSTOMER_HOST", "review-service"))
 	c.RankingServicePort = cast.ToInt(getOrReturnDefault("CUSTOMER_PORT", 1111))
 	return c
 }
